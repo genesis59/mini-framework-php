@@ -30,20 +30,31 @@ class BookDAO implements BookInterface
         $statement = $this->db->prepare($sql);
         $statement->execute();
         $statement->setFetchMode(PDO::FETCH_CLASS, "BookModel");
-        return $statement->fetchAll();
+        $bookList = [];
+        while($book  = $statement->fetch()){
+            $dateTransform = $this->transformDate($book->getDateParution());
+            $book->setDateParution($dateTransform); 
+            array_push($bookList,$book);
+        }
+        return $bookList;
     }
     /**
      * Selectionnez un livre par son id
      * @param int $id
-     * @return BookModel
+     * @return (BookModel || false)
      */
-    public function findOneById(int $id): BookModel
+    public function findOneById(int $id)
     {
         $sql = "SELECT * FROM bookslist WHERE id = ?";
         $statement = $this->db->prepare($sql);
         $statement->execute([$id]);
         $statement->setFetchMode(PDO::FETCH_CLASS, "BookModel");
-        return $statement->fetch();
+        $book = $statement->fetch();
+
+        $dateTransform = $this->transformDate($book->getDateParution());
+        $book->setDateParution($dateTransform); 
+
+        return $book;
     }
 
     /**
@@ -106,5 +117,20 @@ class BookDAO implements BookInterface
         } else {
             $this->updateOne($book);
         }
+    }
+    /**
+     * Transforme la date de la BD du type (2020-09-02)
+     * en date française du type (02/09/2020)
+     * @param string $string
+     * @return string $ dateString
+     */
+    private function transformDate(string $string): string{
+        $dateTab = explode("-",$string);
+        var_dump($dateTab);
+        $temp = $dateTab[0];
+        $dateTab[0] = $dateTab[2];
+        $dateTab[2] = $temp;
+        $dateString = implode("/",$dateTab);
+        return  $dateString;
     }
 }
