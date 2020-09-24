@@ -126,7 +126,6 @@ class BookDAO implements BookInterface
      */
     private function transformDate(string $string): string{
         $dateTab = explode("-",$string);
-        var_dump($dateTab);
         $temp = $dateTab[0];
         $dateTab[0] = $dateTab[2];
         $dateTab[2] = $temp;
