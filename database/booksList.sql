@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS bookslist;
 CREATE TABLE bookslist(
     id int UNSIGNED AUTO_INCREMENT NOT NULL,
     titre varchar(50) NOT NULL,
-    dateParution date,
+    dateParution date NOT NULL,
     auteur varchar(50) NOT NULL,
-    nbPages int,
+    nbPages int NOT NULL,
     PRIMARY KEY(id)
 );
